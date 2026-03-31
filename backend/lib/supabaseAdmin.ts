@@ -3,15 +3,21 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.SUPABASE_URL
 const supabaseServiceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl) throw new Error('SUPABASE_URL environment variable is not set')
-if (!supabaseServiceRoleKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY environment variable is not set')
+function getSupabaseAdmin() {
+  if (!supabaseUrl) throw new Error('SUPABASE_URL env var is not set on the server')
+  if (!supabaseServiceRoleKey) throw new Error('SUPABASE_SERVICE_ROLE_KEY env var is not set on the server')
+  return createClient(supabaseUrl, supabaseServiceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+}
 
-// Service-role client — bypasses RLS. Only use in server-side API routes.
-// Never expose this key to the client.
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceRoleKey, {
-  auth: {
-    autoRefreshToken: false,
-    persistSession: false,
+// Lazy singleton — only created when first needed (not at import time)
+export const supabaseAdmin = new Proxy({} as ReturnType<typeof createClient>, {
+  get(_target, prop) {
+    return getSupabaseAdmin()[prop as keyof ReturnType<typeof createClient>]
   },
 })
 
