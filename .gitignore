@@ -1,0 +1,44 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Environment — never commit real keys
+.env
+.env.local
+.env.development
+.env.production
+.env.dev
+.env.prod
+.env.staging
+# .env.example files ARE committed (they have no real values)
+
+# Expo
+.expo/
+dist/
+web-build/
+
+# Next.js
+.next/
+out/
+
+# Build outputs
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+
+# Logs
+*.log
+npm-debug.log*
+
+# SQLite (local only)
+*.db
+*.db-shm
+*.db-wal
